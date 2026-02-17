@@ -1,19 +1,12 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
 <html class="no-js">
-  <!--<![endif]-->
   <head>
     <title>Arturo González - Dax</title>
-    <!-- Meta Tags and Styles -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./static/assets/css/style.css" />
-    <link rel="shortcut icon" type="image/x-icon" href=favicon.ico">
-    <!-- Meta Tags Commons-->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <meta property="name" content="Arturo González" />
     <meta
       name="description"
@@ -37,6 +30,32 @@
       name="keywords"
       content="Software Developer, technologist, creative technologist, modern and emerging technologies passionate, arturo gonzalez, dax gonzalez"
     />
+
+    <style>
+        /* El cursor parpadeante estilo terminal */
+        .typing-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1em;
+            background-color: currentColor;
+            margin-left: 5px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Mantiene la altura para que el texto no "salte" al borrarse */
+        h2.console-title {
+            min-height: 1.5em; 
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centrado como en tu diseño original */
+        }
+    </style>
   </head>
   <body>
     <div class="container">
@@ -48,7 +67,7 @@
           >
             <div class="logo">
               <span class="logo__mark">></span>
-              <span class="logo__text">$ cd /home/</span>
+              <span class="logo__text" id="header-path">$ cd /home/</span>
               <span class="logo__cursor"> </span>
             </div>
           </a>
@@ -84,7 +103,10 @@
     <div class="content">
       <main class="main">
         <h1>Arturo González</h1>
-        <h2>Software Developer &amp; IT Consultant</h2>
+        
+        <h2 class="console-title">
+            <span id="typewriter-text"></span><span class="typing-cursor"></span>
+        </h2>
         
         <br /><br />
         <div>
@@ -186,7 +208,7 @@
     <footer class="footer">
       <div class="footer__inner">
           <div class="footer__content">
-              <span>© 2020</span>
+              <span>© 2026</span>
           </div>
       </div>
       <div class="footer__inner">
@@ -196,13 +218,80 @@
           </div>
       </div>
   </footer>
-    <!--[if lt IE 7]>
-      <p class="browsehappy">
-        You are using an <strong>outdated</strong> browser. Please
-        <a href="#">upgrade your browser</a> to improve your experience.
-      </p>
-    <![endif]-->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // ============================================
+            // 1. LÓGICA DEL PATH DINÁMICO (Header)
+            // ============================================
+            const pathElement = document.getElementById('header-path');
+            let currentPath = window.location.pathname;
 
-    <script src="" async defer></script>
+            // Simulación de estructura de archivos Linux
+            if (currentPath === '/' || currentPath === '/index.html') {
+                pathElement.innerText = "$ cd ~"; // Home
+            } else {
+                // Limpia la extensión .html y agrega la virgulilla ~
+                // Ejemplo: /resume.html -> ~/resume
+                let cleanPath = currentPath.replace('.html', '').replace(/^\//, '');
+                pathElement.innerText = `$ cd ~/${cleanPath}`;
+            }
+
+            // ============================================
+            // 2. LÓGICA DEL EFECTO MÁQUINA DE ESCRIBIR (H2)
+            // ============================================
+            const textElement = document.getElementById('typewriter-text');
+            
+            // Lista ampliada de roles basada en tu perfil técnico
+            const roles = [
+                "Software Developer",
+                "IT Consultant",
+                "Solution Architect",
+                "AI Enthusiast",
+                "DevOps Engineer",
+                "API Strategy Specialist",
+                "Cloud Infrastructure Expert",
+                "Open Source Advocate"
+            ];
+
+            let roleIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            let typeSpeed = 100;
+
+            function typeWriter() {
+                const currentRole = roles[roleIndex];
+
+                if (isDeleting) {
+                    // Borrando caracteres
+                    textElement.innerText = currentRole.substring(0, charIndex - 1);
+                    charIndex--;
+                    typeSpeed = 40; // Borra más rápido
+                } else {
+                    // Escribiendo caracteres
+                    textElement.innerText = currentRole.substring(0, charIndex + 1);
+                    charIndex++;
+                    typeSpeed = 100; // Escribe a velocidad normal
+                }
+
+                // Lógica de cambio de estado
+                if (!isDeleting && charIndex === currentRole.length) {
+                    // Terminó de escribir la frase
+                    isDeleting = true;
+                    typeSpeed = 2000; // Espera 2 segundos antes de borrar para que se lea
+                } else if (isDeleting && charIndex === 0) {
+                    // Terminó de borrar todo
+                    isDeleting = false;
+                    roleIndex = (roleIndex + 1) % roles.length; // Pasa al siguiente rol (bucle)
+                    typeSpeed = 500; // Pequeña pausa antes de empezar el siguiente
+                }
+
+                setTimeout(typeWriter, typeSpeed);
+            }
+
+            // Iniciar la animación
+            typeWriter();
+        });
+    </script>
   </body>
 </html>
